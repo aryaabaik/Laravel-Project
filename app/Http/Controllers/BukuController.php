@@ -27,29 +27,14 @@ class BukuController extends Controller
             'judul'            => 'required|string|max:255',
             'stok'             => 'required|integer|min:0',
             'tahun'            => 'required|integer|min:1900|max:' . date('Y'),
-            'id_kategori_buku' => 'required|exists:kategori_bukus,id',
-            'id_pengarang'     => 'required|array',
-            'id_pengarang.*'   => 'exists:pengarangs,id',
+            'kategori_buku_id' => 'required|exists:kategori_bukus,id',
+            'pengarang_id'     => 'required|array',
+            'pengarang_id.*'   => 'exists:pengarangs,id',
         ]);
 
-        // Buat buku utama dulu
-        $buku                   = new Buku();
-        $buku->judul            = $request->judul;
-        $buku->stok             = $request->stok;
-        $buku->tahun            = now()->year;
-        $buku->kategori_buku_id = $request->id_kategori_buku;
-        $buku->save();
+      Buku::create($validated);
 
-        $buku = Buku::create([
-    'judul' => $request->judul,
-    'stok'  => $request->stok,
-    'tahun' => $request->tahun,
-]);
-
-$buku->kategori()->attach($request->kategori_buku_id);
-
-
-        return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan!');
+    return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan.');
 
     }
 

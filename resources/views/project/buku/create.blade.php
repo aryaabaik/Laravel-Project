@@ -23,13 +23,15 @@
 
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-3">
-                    <label for="id_kategori_buku" class="form-label">Kategori</label>
-                    <select name="id_kategori_buku[]" id="id_kategori_buku" class="form-select" required>
+                    <label for="kategori_buku_id" class="form-label">Kategori</label>
+                    <select name="kategori_buku_id" class="form-select">
                         <option value="">-- Pilih Kategori --</option>
-                        @foreach ($kategoris as $p)
-                        <option value="{{ $p->id }}">{{ $p->nama_kategori }}</option>
+                        @foreach ($kategoris as $k)
+                        <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
                         @endforeach
                     </select>
+
+
                 </div>
 
                 <hr>
@@ -53,7 +55,7 @@
                     <div class="row produk-item mb-3">
                         <div class="col-md-5">
                             <label class="form-label">Pengarang</label>
-                            <select name="id_pengarang[]" class="form-select produk-select form-control" required>
+                            <select name="id_pengarang" class="form-select produk-select form-control" required>
                                 <option value="">-- Pengarang --</option>
                                 @foreach ($pengarangs as $p)
                                 <option value="{{ $p->id }}">
