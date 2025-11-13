@@ -1,0 +1,94 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h3 class="mb-4">Tambah Transaksi Baru</h3>
+
+    {{-- Notifikasi Error --}}
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Terjadi kesalahan:</strong>
+        <ul class="mb-0">
+            @foreach ($errors->all() as $err)
+            <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form action="{{ route('buku.store') }}" method="POST">
+                @csrf
+
+                {{-- Pilih Pelanggan --}}
+                <div class="mb-3">
+                    <label for="id_kategori_buku" class="form-label">Kategori</label>
+                    <select name="id_kategori_buku[]" id="id_kategori_buku" class="form-select" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($kategoris as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <hr>
+
+                <h5>Daftar Buku</h5>
+
+                {{-- Wrapper Produk --}}
+                  <div class="mb-3">
+                      <label for="">Judul Buku</label>
+                      <input type="text" name="judul" class="form-control @error('judul') is-invalid @enderror">
+                      @error('judul')
+                      <span class="invalid-feedback" role="alert">
+                          <strong> {{ $message }} </strong>
+                      </span>
+                      @enderror
+                  </div>
+
+
+
+                <div id="produk-wrapper">
+                    <div class="row produk-item mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label">Pengarang</label>
+                            <select name="id_pengarang[]" class="form-select produk-select form-control" required>
+                                <option value="">-- Pengarang --</option>
+                                @foreach ($pengarangs as $p)
+                                <option value="{{ $p->id }}">
+                                    {{ $p->nama_pengarang }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                         <div class="mb-3">
+                             <label for="">Stok</label>
+                             <input type="number" name="stok" class="form-control @error('stok') is-invalid @enderror">
+                             @error('stok')
+                             <span class="invalid-feedback" role="alert">
+                                 <strong> {{ $message }} </strong>
+                             </span>
+                             @enderror
+                         </div>
+
+                          <div class="mb-3">
+                              <label for="">Tahun Terbit</label>
+                              <input type="year" name="tahun" class="form-control @error('tahun') is-invalid @enderror">
+                              @error('tahun')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong> {{ $message }} </strong>
+                              </span>
+                              @enderror
+                          </div>
+
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary btn-sm">Simpan Transaksi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
