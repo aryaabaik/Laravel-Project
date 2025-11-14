@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
 {
+    protected $table = 'peminjaman';
     protected $fillable = ['kode_peminjaman', 'nama_peminjam', 'tanggal_peminjaman', 'tanggal_kembali'] ;
 
-    public function peminjamanDetails()
+    public function bukus()
     {
-        return $this->hasMany(PeminjamanDetail::class, 'peminjaman_id');
+        return $this->belongsToMany(Buku::class, 'peminjaman_detail')
+            ->withPivot(['jumlah'])
+            ->withTimestamps();
     }
+
+
 }

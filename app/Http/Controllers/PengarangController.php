@@ -65,7 +65,7 @@ class PengarangController extends Controller
     //destroy
     public function destroy(string $id)
     {
-        $pengaranngs = Pengarang::findOrFail($id);
+        $pengarangs = Pengarang::findOrFail($id);
         $pengarangs->delete();
 
         return redirect()->route('pengarang.index')->with('success', 'Pengarang berhasil dihapus.');

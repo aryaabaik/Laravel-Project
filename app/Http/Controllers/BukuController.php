@@ -24,19 +24,27 @@ class BukuController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul'            => 'required|string|max:255',
-            'stok'             => 'required|integer|min:0',
-            'tahun'            => 'required|integer|min:1900|max:' . date('Y'),
-            'kategori_buku_id' => 'required|exists:kategori_bukus,id',
+            'judul'            => 'required',
+            'kategori_buku_id' => 'required',
             'pengarang_id'     => 'required|array',
-            'pengarang_id.*'   => 'exists:pengarangs,id',
+            'stok'             => 'required|integer',
+            'tahun'            => 'required|integer',
         ]);
 
-      Buku::create($validated);
+        // 1. Simpan data buku
+        $buku = Buku::create([
+            'judul'            => $request->judul,
+            'kategori_buku_id' => $request->kategori_buku_id,
+            'stok'             => $request->stok,
+            'tahun'            => $request->tahun,
+        ]);
 
-    return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan.');
+        // 2. Attach pengarang ke pivot buku_pengarang
+        $buku->pengarangs()->attach($request->pengarang_id);
 
+        return redirect()->route('buku.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
+
 
     public function show($id)
     {
@@ -46,42 +54,43 @@ class BukuController extends Controller
 
     public function edit($id)
     {
-        $buku       = Buku::with(['kategoriBuku', 'pengarangs'])->findOrFail($id);
-        $kategoris  = KategoriBuku::all();
+        $buku = Buku::with(['pengarangs'])->findOrFail($id);
+        $kategoris = KategoriBuku::all();
         $pengarangs = Pengarang::all();
+        return view('project.buku.edit', compact('buku','kategoris','pengarangs'));
 
-        return view('project.buku.edit', compact('buku', 'kategoris', 'pengarangs'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Buku $buku)
     {
-        $validated = $request->validate([
-            'judul'            => 'required|string|max:255',
-            'stok'             => 'required|integer|min:0',
-            'tahun'            => 'required|integer|min:1900|max:' . date('Y'),
-            'id_kategori_buku' => 'required|exists:kategori_bukus,id',
-            'id_pengarang'     => 'required|array',
-            'id_pengarang.*'   => 'exists:pengarangs,id',
+        $request->validate([
+            'judul' => 'required',
+            'kategori_id' => 'required|exists:kategori_bukus,id',
+            'stok' => 'required|integer',
+            'tahun' => 'required|integer',
+            'pengarang_id' => 'required|array',
         ]);
 
-        // Buat buku utama dulu
-        $buku                   = new Buku();
-        $buku->judul            = $request->judul;
-        $buku->stok             = $request->stok;
-        $buku->tahun            = now()->year;
-        $buku->kategori_buku_id = $request->id_kategori_buku;
-        $buku->save();
+        // Update data buku
+        $buku->update([
+            'judul' => $request->judul,
+            'kategori_id' => $request->kategori_id,
+            'stok' => $request->stok,
+            'tahun' => $request->tahun,
+        ]);
 
-        $buku->pengarangs()->sync($request->id_pengarang);
+        // Sinkron pengarang many-to-many
+        $buku->pengarangs()->sync($request->pengarang_id);
 
-        return redirect()->route('buku.index')->with('success', 'Buku berhasil diubah!');
+        return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui');
     }
+
 
     public function destroy($id)
     {
-        $kategoris = KategoriBuku::findOrFail($id);
-        $kategoris->delete();
+        $buku = Buku::findOrFail($id);
+        $buku->delete();
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori Buku berhasil dihapus.');
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
     }
 }

@@ -14,7 +14,19 @@ class Buku extends Model
     }
 
     public function pengarangs()
+{
+    return $this->belongsToMany(Pengarang::class);
+}
+
+        public function peminjamans()
     {
-        return $this->belongsToMany(Pengarang::class, 'buku_pengarang', 'buku_id', 'pengarang_id');
+        return $this->belongsToMany(Peminjaman::class, 'peminjaman_detail')
+                    ->withPivot('jumlah');
     }
+
+        public function peminjamanDetails()
+    {
+        return $this->hasMany(PeminjamanDetail::class);
+    }
+
 }

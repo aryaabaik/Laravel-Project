@@ -54,15 +54,14 @@
                 <div id="produk-wrapper">
                     <div class="row produk-item mb-3">
                         <div class="col-md-5">
-                            <label class="form-label">Pengarang</label>
-                            <select name="id_pengarang" class="form-select produk-select form-control" required>
-                                <option value="">-- Pengarang --</option>
+                            <label for="pengarang_id" class="form-label">Pengarang</label>
+                            <select name="pengarang_id[]" id="pengarang_id" class="form-select js-multiple" multiple >
+                                <option value="">-- Pilih Pengarang --</option>
                                 @foreach ($pengarangs as $p)
-                                <option value="{{ $p->id }}">
-                                    {{ $p->nama_pengarang }}
-                                </option>
+                                    <option value="{{ $p->id }}">{{ $p->nama_pengarang }}</option>
                                 @endforeach
                             </select>
+                             <small class="text-muted">Tekan Ctrl (atau Cmd di Mac) untuk pilih lebih dari satu.</small>
                         </div>
 
                          <div class="mb-3">
