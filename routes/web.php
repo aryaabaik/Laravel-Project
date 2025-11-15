@@ -7,17 +7,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+    Route::get('/',function(){
+        return view('admin.index');
+    });
+});
 
 Route::group(['prefix' => 'project', 'middleware' => 'auth'], function () {
      Route::get('/peminjaman/search', [App\Http\Controllers\PeminjamanController::class, 'search'])->name('peminjaman.search');
